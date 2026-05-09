@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+
+const creditsController = require('./credits.controller');
+
+router.post('/', creditsController.createCredit);
+router.get('/', creditsController.getCredits);
+router.get('/late', creditsController.getLateCredits);
+
+module.exports = router;

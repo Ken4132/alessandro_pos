@@ -3,6 +3,10 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { pool } = require('./config/db');
 const authRoutes = require('./modules/auth/auth.routes');
+const clientsRoutes = require('./modules/clients/clients.routes');
+const salesRoutes = require('./modules/sales/sales.routes');
+const creditsRoutes = require('./modules/credits/credits.routes');
+const paymentsRoutes = require('./modules/payments/payments.routes');
 
 dotenv.config();
 
@@ -11,6 +15,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/clients', clientsRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/credits', creditsRoutes);
+app.use('/api/payments', paymentsRoutes);
 
 app.get('/db-test', async (req, res) => {
   try {
