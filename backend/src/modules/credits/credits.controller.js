@@ -112,3 +112,55 @@ exports.getLateCredits = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getDashboardStats = async (req, res) => {
+
+  try {
+
+    const totalClientes = await pool.query(
+      'SELECT COUNT(*) FROM clientes'
+    );
+
+    const totalCreditos = await pool.query(
+      `SELECT COUNT(*) 
+       FROM creditos
+       WHERE estado = 'activo'`
+    );
+
+    const totalMorosos = await pool.query(
+      `SELECT COUNT(*)
+       FROM creditos
+       WHERE estado = 'activo'
+       AND proximo_pago < CURRENT_DATE`
+    );
+
+    const saldoPendiente = await pool.query(
+      `SELECT COALESCE(
+          SUM(saldo_pendiente), 0
+       ) AS total
+       FROM creditos
+       WHERE estado = 'activo'`
+    );
+
+    res.json({
+
+      clientes:
+        totalClientes.rows[0].count,
+
+      creditos:
+        totalCreditos.rows[0].count,
+
+      morosos:
+        totalMorosos.rows[0].count,
+
+      saldoPendiente:
+        saldoPendiente.rows[0].total
+
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+  }
+};
